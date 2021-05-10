@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bytes"
-	"io/ioutil"
 	"log"
 	"os"
 	"regexp"
@@ -267,7 +266,7 @@ func TestRun(t *testing.T) {
 
 			if len(test.inputFile) == 0 {
 				content := []byte("sadfslklf sdfiowejsf dummysdfkl\ndjflks\nsdf klsdf skl dummy new")
-				tmpfile, err := ioutil.TempFile("", "")
+				tmpfile, err := os.CreateTemp("", "")
 				if err != nil {
 					t.Error(err)
 				}

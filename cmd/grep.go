@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"io/fs"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -23,7 +22,7 @@ func Run(searchStr, inpFile string) ([]string, error) {
 		}
 		if exist && isDir {
 			filepaths := []string{}
-			err = filepath.Walk(inpFile, func(path string, info fs.FileInfo, err error) error {
+			err = filepath.Walk(inpFile, func(path string, info os.FileInfo, err error) error {
 				if err != nil {
 					return err
 				}
