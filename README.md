@@ -1,4 +1,4 @@
-## grep-go Grep like CLI in go
+## Grep like CLI in go
 
 #### Problem statement
 
@@ -63,8 +63,17 @@ $ go build -o grep
 $ ./grep search_string input_file -o output_file
 ```
 
-Note:- This cli have all the features above mentioned. If input_file not provide cli gets input from Standard input. If output_file not provided output will be on Standard Output.
+---
+**NOTE**
 
-No external dependencies.Only standard library.
+This cli have all the features above mentioned. If input_file not provide cli gets input from Standard input.
 
-#### Home Assessment task by One2N Consulting Private Limited
+If output_file not provided output will be on Standard Output.
+
+No external dependencies.
+
+Only standard library used.
+
+Home Assessment task by One2N Consulting Private Limited
+
+---
