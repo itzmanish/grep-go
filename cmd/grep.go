@@ -10,6 +10,8 @@ import (
 	"regexp"
 )
 
+// Run start searching of string in given input file or os.Stdin in case of input file path not provided.
+// It returns result as array of string and error
 func Run(search_text, input_file string) ([]string, error) {
 	exp := regexp.MustCompile("(?i)" + search_text)
 	matched_string := []string{}
@@ -62,6 +64,9 @@ func Exists(path string) (bool, bool, error) {
 	return false, false, err
 }
 
+// OpenAndFind opens a file by given path and find the expression in that file
+// It returns result as array of string and error
+// You can get filename in result array by using verbose as true.
 func OpenAndFind(path string, exp *regexp.Regexp, verbose bool) ([]string, error) {
 	out := []string{}
 	f, err := os.Open(path)
@@ -73,6 +78,9 @@ func OpenAndFind(path string, exp *regexp.Regexp, verbose bool) ([]string, error
 	return out, nil
 }
 
+// Find searches for expression in given Reader interface.
+// It returns result as array of string.
+// You can get filename in result array by using verbose as true.
 func Find(r io.Reader, exp *regexp.Regexp, path string, verbose bool) []string {
 	found_strings := []string{}
 	scanner := bufio.NewScanner(r)
@@ -88,11 +96,13 @@ func Find(r io.Reader, exp *regexp.Regexp, path string, verbose bool) []string {
 	return found_strings
 }
 
+// FindExp searches for expression in given input string and return whether it exist on input string or not.
 func FindExp(exp *regexp.Regexp, input string) bool {
 	found_string := exp.FindString(input)
 	return len(found_string) != 0
 }
 
+// Write writes given array of strings to out file or stdout in case of out filepath not provided.
 func Write(out string, lines []string) (int, error) {
 	writer := os.Stdout
 	var writtenSize int

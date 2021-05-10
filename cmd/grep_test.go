@@ -117,32 +117,32 @@ func TestFindExp(t *testing.T) {
 
 func TestFind(t *testing.T) {
 	testcases := []struct {
-		name          string
-		sample_input  []string
-		found_strings []string
-		path          string
-		verbose       bool
+		name           string
+		sampleInput    []string
+		expectedResult []string
+		path           string
+		verbose        bool
 	}{
 		{
 			name: "Find text with success",
-			sample_input: []string{
+			sampleInput: []string{
 				"sdf klsdf skl dummy new",
 				"sdjflks",
 				"sadfslklf sdfiowejsf dummysdfkl",
 			},
-			found_strings: []string{
+			expectedResult: []string{
 				"sdf klsdf skl dummy new",
 				"sadfslklf sdfiowejsf dummysdfkl",
 			},
 		},
 		{
 			name: "Find text with success",
-			sample_input: []string{
+			sampleInput: []string{
 				"sdf klsdf skl dummy new",
 				"sdjflks",
 				"sadfslklf sdfiowejsf dummysdfkl",
 			},
-			found_strings: []string{
+			expectedResult: []string{
 				"test.txt:sdf klsdf skl dummy new",
 				"test.txt:sadfslklf sdfiowejsf dummysdfkl",
 			},
@@ -151,31 +151,31 @@ func TestFind(t *testing.T) {
 		},
 		{
 			name: "Not found text",
-			sample_input: []string{
+			sampleInput: []string{
 				"sdf klsdf skl new",
 				"sdjflks",
 				"sadfslklf sdfiowejsf dfkl",
 			},
-			found_strings: []string{},
+			expectedResult: []string{},
 		},
 	}
 	for _, test := range testcases {
 		t.Run(test.name, func(t *testing.T) {
 
 			var stdin bytes.Buffer
-			for _, line := range test.sample_input {
+			for _, line := range test.sampleInput {
 				stdin.Write([]byte(line + "\n"))
 			}
 
 			out := Find(&stdin, exp, "", false)
-			if len(out) != len(test.found_strings) {
-				t.Errorf("Expected length of out:%v but got %v", len(test.found_strings), len(out))
+			if len(out) != len(test.expectedResult) {
+				t.Errorf("Expected length of out:%v but got %v", len(test.expectedResult), len(out))
 				return
 			}
 			if len(out) > 0 {
 				for i := len(out); i <= 0; i++ {
-					if out[i] != test.found_strings[i] {
-						t.Errorf("Expected string: [%v] but got [%v]", test.found_strings[i], out[i])
+					if out[i] != test.expectedResult[i] {
+						t.Errorf("Expected string: [%v] but got [%v]", test.expectedResult[i], out[i])
 					}
 				}
 			}
@@ -231,32 +231,32 @@ func TestOpenAndFind(t *testing.T) {
 func TestRun(t *testing.T) {
 	testcases := []struct {
 		name        string
-		search_text string
-		input_file  string
-		output_file string
+		searchText  string
+		inputFile   string
+		outputFile  string
 		ErrExpected bool
 	}{
 		{
 			name:        "Success without error",
-			search_text: "dummy",
-			input_file:  "../test_input.txt",
+			searchText:  "dummy",
+			inputFile:   "../test_input.txt",
 			ErrExpected: false,
 		},
 		{
 			name:        "Success without error",
-			search_text: "dummy",
-			input_file:  "../tests",
+			searchText:  "dummy",
+			inputFile:   "../tests",
 			ErrExpected: false,
 		},
 		{
 			name:        "Success with input as stdin",
-			search_text: "dummy",
+			searchText:  "dummy",
 			ErrExpected: false,
 		},
 		{
 			name:        "Fail with wrong path error",
-			search_text: "dummy",
-			input_file:  "lorem.txt",
+			searchText:  "dummy",
+			inputFile:   "lorem.txt",
 			ErrExpected: true,
 		},
 	}
@@ -265,7 +265,7 @@ func TestRun(t *testing.T) {
 			oldStdin := os.Stdin
 			defer func() { os.Stdin = oldStdin }() // Restore original Stdin
 
-			if len(test.input_file) == 0 {
+			if len(test.inputFile) == 0 {
 				content := []byte("sadfslklf sdfiowejsf dummysdfkl\ndjflks\nsdf klsdf skl dummy new")
 				tmpfile, err := ioutil.TempFile("", "")
 				if err != nil {
@@ -283,7 +283,7 @@ func TestRun(t *testing.T) {
 				}
 				os.Stdin = tmpfile
 			}
-			result, err := Run(test.search_text, test.input_file)
+			result, err := Run(test.searchText, test.inputFile)
 			if err == nil && test.ErrExpected {
 				t.Error("Error expected but got no error")
 				return
@@ -296,7 +296,6 @@ func TestRun(t *testing.T) {
 			if len(result) == 0 && !test.ErrExpected {
 				t.Error("Expected some result but got nothing!")
 			}
-			log.Println(result)
 		})
 	}
 }

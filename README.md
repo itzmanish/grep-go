@@ -1,5 +1,8 @@
 ## Grep like CLI in go
 
+[![Go](https://github.com/itzmanish/grep-go/actions/workflows/go.yml/badge.svg)](https://github.com/itzmanish/grep-go/actions/workflows/go.yml)
+[![codecov](https://codecov.io/gh/itzmanish/grep-go/branch/master/graph/badge.svg?token=H3OOFSCKAE)](https://codecov.io/gh/itzmanish/grep-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/itzmanish/grep-go)](https://goreportcard.com/report/github.com/itzmanish/grep-go)
 #### Problem statement
 
 Write a command line program that implements Unix command `grep` like functionality.
@@ -57,13 +60,14 @@ tests/inner/test2.txt:this file contains a test line
 - [x] Package test
 
 ### Instruction to install and use
-
+> Important: It seems like you need to have go version >= 1.16. With github action build is failing on go version 1.15 because of io/fs package. I will fix this later.
 ```
 $ go build -o grep
 $ ./grep search_string input_file -o output_file
 ```
 
 ---
+
 **NOTE**
 
 This cli have all the features above mentioned. If input_file not provide cli gets input from Standard input.
