@@ -12,18 +12,18 @@ import (
 
 // Run start searching of string in given input file or os.Stdin in case of input file path not provided.
 // It returns result as array of string and error
-func Run(search_text, input_file string) ([]string, error) {
-	exp := regexp.MustCompile("(?i)" + search_text)
-	matched_string := []string{}
+func Run(searchStr, inpFile string) ([]string, error) {
+	exp := regexp.MustCompile("(?i)" + searchStr)
+	matchedStrings := []string{}
 
-	if len(input_file) != 0 {
-		exist, isDir, err := Exists(input_file)
+	if len(inpFile) != 0 {
+		exist, isDir, err := Exists(inpFile)
 		if err != nil {
 			return []string{}, err
 		}
 		if exist && isDir {
 			filepaths := []string{}
-			err = filepath.Walk(input_file, func(path string, info fs.FileInfo, err error) error {
+			err = filepath.Walk(inpFile, func(path string, info fs.FileInfo, err error) error {
 				if err != nil {
 					return err
 				}
@@ -40,19 +40,19 @@ func Run(search_text, input_file string) ([]string, error) {
 				if err != nil {
 					return []string{}, err
 				}
-				matched_string = append(matched_string, out...)
+				matchedStrings = append(matchedStrings, out...)
 			}
 		} else if exist && !isDir {
-			matched_string, err = OpenAndFind(input_file, exp, false)
+			matchedStrings, err = OpenAndFind(inpFile, exp, false)
 			if err != nil {
 				return []string{}, err
 			}
 		}
 	} else {
-		matched_string = Find(os.Stdin, exp, "", false)
+		matchedStrings = Find(os.Stdin, exp, "", false)
 	}
 
-	return matched_string, nil
+	return matchedStrings, nil
 }
 
 // Exists returns whether the given file or directory exists
@@ -82,24 +82,24 @@ func OpenAndFind(path string, exp *regexp.Regexp, verbose bool) ([]string, error
 // It returns result as array of string.
 // You can get filename in result array by using verbose as true.
 func Find(r io.Reader, exp *regexp.Regexp, path string, verbose bool) []string {
-	found_strings := []string{}
+	result := []string{}
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		if FindExp(exp, scanner.Text()) {
-			matched_line := scanner.Text()
+			matched := scanner.Text()
 			if verbose {
-				matched_line = fmt.Sprintf("%s:%s", path, scanner.Text())
+				matched = fmt.Sprintf("%s:%s", path, scanner.Text())
 			}
-			found_strings = append(found_strings, matched_line)
+			result = append(result, matched)
 		}
 	}
-	return found_strings
+	return result
 }
 
 // FindExp searches for expression in given input string and return whether it exist on input string or not.
 func FindExp(exp *regexp.Regexp, input string) bool {
-	found_string := exp.FindString(input)
-	return len(found_string) != 0
+	result := exp.FindString(input)
+	return len(result) != 0
 }
 
 // Write writes given array of strings to out file or stdout in case of out filepath not provided.

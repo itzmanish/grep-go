@@ -9,27 +9,27 @@ import (
 )
 
 func main() {
-	out_file := flag.String("o", "", "Output file name")
+	outFile := flag.String("o", "", "Output file name")
 	flag.Parse()
 
-	search_str := flag.Arg(0)
-	inp_file := flag.Arg(1)
+	searchStr := flag.Arg(0)
+	inpFile := flag.Arg(1)
 	if flag.Arg(2) == "-o" && len(flag.Arg(3)) != 0 {
-		*out_file = flag.Arg(3)
+		*outFile = flag.Arg(3)
 	}
 
-	if len(search_str) == 0 {
+	if len(searchStr) == 0 {
 		fmt.Println("Usages: ./grep foo filename.txt")
 		flag.PrintDefaults()
 		return
 	}
 
-	result, err := cmd.Run(search_str, inp_file)
+	result, err := cmd.Run(searchStr, inpFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println()
-	_, err = cmd.Write(*out_file, result)
+	_, err = cmd.Write(*outFile, result)
 	if err != nil {
 		log.Fatal(err)
 	}
