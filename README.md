@@ -2,6 +2,7 @@
 
 [![Go](https://github.com/itzmanish/grep-go/actions/workflows/go.yml/badge.svg)](https://github.com/itzmanish/grep-go/actions/workflows/go.yml)
 [![codecov](https://codecov.io/gh/itzmanish/grep-go/branch/master/graph/badge.svg?token=H3OOFSCKAE)](https://codecov.io/gh/itzmanish/grep-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/itzmanish/grep-go)](https://goreportcard.com/report/github.com/itzmanish/grep-go)
 #### Problem statement
 
 Write a command line program that implements Unix command `grep` like functionality.
