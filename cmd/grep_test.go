@@ -298,3 +298,43 @@ func TestRun(t *testing.T) {
 		})
 	}
 }
+
+func BenchmarkRunSingleFile(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		_, err := Run("dummy", "../test_input.txt")
+		if err != nil {
+			b.Error(err)
+		}
+	}
+}
+func BenchmarkRunSingleFileParallel(b *testing.B) {
+	b.RunParallel(func(p *testing.PB) {
+		for p.Next() {
+			_, err := Run("dummy", "../test_input.txt")
+			if err != nil {
+				b.Error(err)
+			}
+		}
+
+	})
+}
+
+func BenchmarkRunFolder(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		_, err := Run("dummy", "../tests")
+		if err != nil {
+			b.Error(err)
+		}
+	}
+}
+func BenchmarkRunFolderParallel(b *testing.B) {
+	b.RunParallel(func(p *testing.PB) {
+		for p.Next() {
+			_, err := Run("dummy", "../tests")
+			if err != nil {
+				b.Error(err)
+			}
+		}
+
+	})
+}
