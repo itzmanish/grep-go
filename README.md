@@ -72,18 +72,14 @@ $ ./grep search_string input_file -o output_file
 ### Benchmarks
 
 ```
-
 goos: linux
 goarch: amd64
 pkg: github.com/itzmanish/grep-go/cmd
 cpu: Intel(R) Core(TM) i5-5300U CPU @ 2.30GHz
-BenchmarkRunSingleFile-4           	    7254	    175530 ns/op	    9376 B/op	      31 allocs/op
-BenchmarkRunSingleFileParallel-4   	   13072	     83691 ns/op	    9399 B/op	      31 allocs/op
-BenchmarkRunFolder-4               	    5110	    219789 ns/op	   36752 B/op	      96 allocs/op
-BenchmarkRunFolderParallel-4       	    8029	    126457 ns/op	   37034 B/op	      96 allocs/op
-PASS
-coverage: 65.1% of statements
-ok  	github.com/itzmanish/grep-go/cmd	7.312s
+BenchmarkRunSingleFile-4           	   14859	     72704 ns/op	   10295 B/op	      38 allocs/op
+BenchmarkRunSingleFileParallel-4   	   19086	     74755 ns/op	    9867 B/op	      38 allocs/op
+BenchmarkRunFolder-4               	   10000	    150037 ns/op	   36793 B/op	      94 allocs/op
+BenchmarkRunFolderParallel-4       	   10000	    149637 ns/op	   37352 B/op	      95 allocs/op
 ```
 
 ---
