@@ -29,8 +29,10 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println()
-	_, err = cmd.Write(*outFile, result)
-	if err != nil {
-		log.Fatal(err)
+	for out := range result.Result {
+		_, err = cmd.Write(*outFile, out)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }

@@ -7,60 +7,55 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sync"
 )
+
+type Output struct {
+	Result chan []string
+}
 
 // Run start searching of string in given input file or os.Stdin in case of input file path not provided.
 // It returns result as array of string and error
-func Run(searchStr, inpFile string) ([]string, error) {
+func Run(searchStr, inpFile string) (Output, error) {
 	exp := regexp.MustCompile("(?i)" + searchStr)
-	matchedStrings := []string{}
+	result := Output{Result: make(chan []string, 1)}
+	var wg sync.WaitGroup
 
 	if len(inpFile) != 0 {
-		exist, isDir, err := Exists(inpFile)
+		err := filepath.Walk(inpFile, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if !info.IsDir() {
+				wg.Add(1)
+				go func() {
+					defer wg.Done()
+					out, err := OpenAndFind(path, exp, true)
+					if err != nil {
+						return
+					}
+					if len(out) != 0 {
+						result.Result <- out
+					}
+				}()
+			}
+			return nil
+		})
+		go func() {
+			wg.Wait()
+			close(result.Result)
+		}()
+
 		if err != nil {
-			return []string{}, err
+			return result, err
 		}
-		if exist && isDir {
-			filepaths := []string{}
-			err = filepath.Walk(inpFile, func(path string, info os.FileInfo, err error) error {
-				if err != nil {
-					return err
-				}
-				if !info.IsDir() {
-					filepaths = append(filepaths, path)
-				}
-				return nil
-			})
-			if err != nil {
-				return []string{}, err
-			}
-			for _, path := range filepaths {
-				out, err := OpenAndFind(path, exp, true)
-				if err != nil {
-					return []string{}, err
-				}
-				matchedStrings = append(matchedStrings, out...)
-			}
-		} else if exist && !isDir {
-			matchedStrings, err = OpenAndFind(inpFile, exp, false)
-			if err != nil {
-				return []string{}, err
-			}
-		}
+
 	} else {
-		matchedStrings = Find(os.Stdin, exp, "", false)
+		result.Result <- Find(os.Stdin, exp, "", false)
+		close(result.Result)
 	}
 
-	return matchedStrings, nil
-}
-
-// Exists returns whether the given file or directory exists
-func Exists(path string) (bool, bool, error) {
-	info, err := os.Stat(path)
-	if err == nil {
-		return true, info.IsDir(), nil
-	}
-	return false, false, err
+	return result, nil
 }
 
 // OpenAndFind opens a file by given path and find the expression in that file
