@@ -4,9 +4,11 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"regexp"
+	"sync"
 )
 
 // Run start searching of string in given input file or os.Stdin in case of input file path not provided.
@@ -14,32 +16,36 @@ import (
 func Run(searchStr, inpFile string) ([]string, error) {
 	exp := regexp.MustCompile("(?i)" + searchStr)
 	matchedStrings := []string{}
-
+	var wg sync.WaitGroup
+	var locker sync.RWMutex
 	if len(inpFile) != 0 {
 		exist, isDir, err := Exists(inpFile)
 		if err != nil {
 			return []string{}, err
 		}
 		if exist && isDir {
-			filepaths := []string{}
 			err = filepath.Walk(inpFile, func(path string, info os.FileInfo, err error) error {
 				if err != nil {
 					return err
 				}
 				if !info.IsDir() {
-					filepaths = append(filepaths, path)
+					wg.Add(1)
+					go func(wg *sync.WaitGroup) {
+						defer wg.Done()
+						locker.Lock()
+						out, err := OpenAndFind(path, exp, true)
+						if err != nil {
+							log.Fatal(err)
+						}
+						matchedStrings = append(matchedStrings, out...)
+						locker.Unlock()
+					}(&wg)
 				}
 				return nil
 			})
+			wg.Wait()
 			if err != nil {
 				return []string{}, err
-			}
-			for _, path := range filepaths {
-				out, err := OpenAndFind(path, exp, true)
-				if err != nil {
-					return []string{}, err
-				}
-				matchedStrings = append(matchedStrings, out...)
 			}
 		} else if exist && !isDir {
 			matchedStrings, err = OpenAndFind(inpFile, exp, false)
