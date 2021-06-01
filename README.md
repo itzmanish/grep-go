@@ -3,6 +3,7 @@
 [![Go](https://github.com/itzmanish/grep-go/actions/workflows/go.yml/badge.svg)](https://github.com/itzmanish/grep-go/actions/workflows/go.yml)
 [![codecov](https://codecov.io/gh/itzmanish/grep-go/branch/master/graph/badge.svg?token=H3OOFSCKAE)](https://codecov.io/gh/itzmanish/grep-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/itzmanish/grep-go)](https://goreportcard.com/report/github.com/itzmanish/grep-go)
+
 #### Problem statement
 
 Write a command line program that implements Unix command `grep` like functionality.
@@ -60,10 +61,24 @@ tests/inner/test2.txt:this file contains a test line
 - [x] Package test
 
 ### Instruction to install and use
+
 > Important: It seems like you need to have go version >= 1.16. With github action build is failing on go version 1.15 because of io/fs package. I will fix this later.
+
 ```
 $ go build -o grep
 $ ./grep search_string input_file -o output_file
+```
+
+### Benchmark result
+
+```
+goos: linux
+goarch: amd64
+pkg: github.com/itzmanish/grep-go/cmd
+cpu: Intel(R) Core(TM) i5-5300U CPU @ 2.30GHz
+BenchmarkRun-4             10000            131415 ns/op           37591 B/op         95 allocs/op
+PASS
+ok      github.com/itzmanish/grep-go/cmd        1.347s
 ```
 
 ---
