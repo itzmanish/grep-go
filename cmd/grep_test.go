@@ -298,3 +298,12 @@ func TestRun(t *testing.T) {
 		})
 	}
 }
+
+func BenchmarkRun(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		_, err := Run("dummy", "../tests")
+		if err != nil {
+			b.Error(err)
+		}
+	}
+}
