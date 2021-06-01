@@ -10,47 +10,6 @@ import (
 
 var exp *regexp.Regexp = regexp.MustCompile("(?i)dummy")
 
-func TestExists(t *testing.T) {
-	testcases := []struct {
-		name         string
-		path         string
-		failExpected bool
-	}{
-		{
-			name:         "Success with valid path",
-			path:         "../tests",
-			failExpected: false,
-		},
-		{
-			name:         "Success with valid directory",
-			path:         "../tests",
-			failExpected: false,
-		},
-		{
-			name:         "Failing case with wrong directory path",
-			path:         "test",
-			failExpected: true,
-		},
-		{
-			name:         "Failing case with wrong path",
-			path:         "test.txt",
-			failExpected: true,
-		},
-	}
-
-	for _, test := range testcases {
-		t.Run(test.name, func(t *testing.T) {
-			_, _, err := Exists(test.path)
-			if err != nil && !test.failExpected {
-				t.Errorf("Expected no error but got: %v", err)
-			} else if test.failExpected && err == nil {
-				t.Error("Error expected")
-			}
-
-		})
-	}
-}
-
 func TestWrite(t *testing.T) {
 	testcases := []struct {
 		name         string
@@ -291,9 +250,10 @@ func TestRun(t *testing.T) {
 				t.Errorf("Error not expected but got error: %v", err)
 				return
 			}
-
-			if len(result) == 0 && !test.ErrExpected {
-				t.Error("Expected some result but got nothing!")
+			for res := range result.Result {
+				if len(res) == 0 && !test.ErrExpected {
+					t.Error("Expected some result but got nothing!")
+				}
 			}
 		})
 	}
