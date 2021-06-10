@@ -203,7 +203,7 @@ func TestRun(t *testing.T) {
 		{
 			name:        "Success without error",
 			searchText:  "dummy",
-			inputFile:   "../tests",
+			inputFile:   "../sample_dir",
 			ErrExpected: false,
 		},
 		{
@@ -281,7 +281,7 @@ func BenchmarkRunSingleFileParallel(b *testing.B) {
 
 func BenchmarkRunFolder(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		_, err := Run("dummy", "../tests")
+		_, err := Run("dummy", "../sample_dir")
 		if err != nil {
 			b.Error(err)
 		}
@@ -290,7 +290,7 @@ func BenchmarkRunFolder(b *testing.B) {
 func BenchmarkRunFolderParallel(b *testing.B) {
 	b.RunParallel(func(p *testing.PB) {
 		for p.Next() {
-			_, err := Run("dummy", "../tests")
+			_, err := Run("dummy", "../sample_dir")
 			if err != nil {
 				b.Error(err)
 			}
